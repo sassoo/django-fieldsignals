@@ -90,7 +90,8 @@ class ChangedSignal(Signal):
         """
         def pr(instance, *args, **kwargs):
             changed_fields = self.get_and_update_changed_fields(receiver, instance, fields)
-            if changed_fields:
+            # XXX added to also invoke signal handlers on create
+            if changed_fields or instance._state.adding:
                 receiver(instance=instance, changed_fields=changed_fields, *args, **kwargs)
 
         pr._original_receiver = receiver
